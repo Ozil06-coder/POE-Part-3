@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enquiry - The Temptations Lounge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        :root {
+            --charcoal: #1a1a1a;
+            --burgundy: #8B0000;
+            --cream: #f5f3f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: 'Mulish', sans-serif;
+            background-color: var(--charcoal);
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .form-container {
+            background: #000;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 720px;
+            width: 100%;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
+            animation: fadeIn 1s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            width: 140px;
+            margin-bottom: 16px;
+        }
+
+        .hero-img {
+            width: 100%;
+            max-height: 220px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-weight: 200;
+            font-size: 28px;
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        form {
+            width: 100%;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 6px;
+            font-size: 14px;
+            font-weight: 300;
+        }
+
+        input,
+        select,
+        textarea {
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+            transition: background 0.3s, border 0.3s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            background: rgba(255, 255, 255, 0.2);
+            outline: 2px solid var(--burgundy);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            background-color: var(--burgundy);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 600;
+            user-select: none;
+        }
+
+        .submit-btn:hover:enabled {
+            background-color: #f34646;
+        }
+
+        .submit-btn:disabled {
+            background-color: #550000;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* Validation styles */
+        input.invalid,
+        select.invalid,
+        textarea.invalid {
+            border: 2px solid #f70707;
+            background-color: #964646;
+        }
+
+        .error-msg {
+            color: #ff5577;
+            font-size: 13px;
+            margin-top: 4px;
+            font-weight: 300;
+            font-style: italic;
+            height: 16px;
+            user-select: none;
+            pointer-events: none;
+            min-height: 18px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #111;
+            color: #fff;
+            border-left: 6px solid var(--burgundy);
+            padding: 20px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s ease;
+            z-index: 9999;
+            min-width: 280px;
+            max-width: 400px;
+            font-size: 14px;
+            line-height: 1.5;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+
+        .toast.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .toast .checkmark {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--burgundy);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            animation: pop 0.4s ease-out;
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(0.4);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .toast .close-btn {
+            margin-left: auto;
+            background: transparent;
+            border: none;
+            color: #ccc;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            padding: 0;
+            transition: color 0.3s;
+        }
+
+        .toast .close-btn:hover {
+            color: #fff;
+        }
+
+        footer {
+            background: #000;
+            color: #aaa;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main>
+        <div class="form-container">
+            <img src="logo.png" alt="Temptations Lounge Logo" class="logo" />
+            <img src="main.jpg" alt="Temptations Lounge Decor" class="hero-img" />
+
+            <h1>Make an Enquiry</h1>
+
+            <form id="enquiryForm" novalidate>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" name="firstName" required />
+                        <div class="error-msg"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" required />
+                        <div class="error-msg"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required />
+                    <div class="error-msg"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" required />
+                    <div class="error-msg"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="enquiryType">Type of Enquiry</label>
+                    <select id="enquiryType" name="enquiryType" required>
+                        <option value="" disabled selected>Select enquiry type</option>
+                        <option value="service">Service Information</option>
+                        <option value="booking">Booking Request</option>
+                        <option value="collab">Collaboration / Partnership</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <div class="error-msg"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Message / Description</label>
+                    <textarea id="message" name="message" required></textarea>
+                    <div class="error-msg"></div>
+                </div>
+
+                <button type="submit" class="submit-btn" disabled>
+                    Submit Enquiry <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <div class="toast" id="toastMsg">
+        <div class="checkmark"><i class="fas fa-check"></i></div>
+        <div class="toast-message" id="toastText">Your enquiry has been submitted. Thank you!</div>
+        <button class="close-btn" onclick="hideToast()">&times;</button>
+    </div>
+
+    <footer>&copy; 2025 The Temptations Lounge. Designed with love by Phumelele Rozana</footer>
+
+    <script>
+        const enquiryForm = document.getElementById('enquiryForm');
+        const submitBtn = enquiryForm.querySelector('button[type="submit"]');
+        const toastMsg = document.getElementById('toastMsg');
+
+        // Validation rules
+        const validators = {
+            firstName: (val) => val.trim() !== '' || "First name is required",
+            lastName: (val) => val.trim() !== '' || "Last name is required",
+            email: (val) => {
+                if (val.trim() === '') return "Email is required";
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(val) || "Please enter a valid email";
+            },
+            phone: (val) => {
+                if (val.trim() === '') return "Phone number is required";
+                const phoneRegex = /^\d{10}$/;
+                return phoneRegex.test(val) || "Phone must be 10 digits";
+            },
+            enquiryType: (val) => val !== '' || "Please select enquiry type",
+            message: (val) => val.trim() !== '' || "Message is required",
+        };
+
+        // Show or clear error messages
+        function validateField(field) {
+            const value = field.value;
+            const name = field.name;
+            const errorContainer = field.parentElement.querySelector('.error-msg');
+            const valid = validators[name](value);
+
+            if (valid === true) {
+                field.classList.remove('invalid');
+                errorContainer.textContent = '';
+                return true;
+            } else {
+                field.classList.add('invalid');
+                errorContainer.textContent = valid;
+                return false;
+            }
+        }
+
+        // Validate all fields & return overall validity
+        function validateForm() {
+            let isValid = true;
+            const fields = enquiryForm.querySelectorAll('input, select, textarea');
+            fields.forEach(field => {
+                if (!validateField(field)) isValid = false;
+            });
+            return isValid;
+        }
+
+        // Disable submit button if invalid
+        function toggleSubmit() {
+            submitBtn.disabled = !validateForm();
+        }
+
+        // Real-time validation on inputs
+        enquiryForm.querySelectorAll('input, select, textarea').forEach(field => {
+            field.addEventListener('input', () => {
+                validateField(field);
+                toggleSubmit();
+            });
+            field.addEventListener('blur', () => validateField(field));
+        });
+
+        // On form submit
+        enquiryForm.addEventListener('submit', e => {
+            e.preventDefault();
+            if (!validateForm()) {
+                // Focus first invalid field
+                enquiryForm.querySelector('.invalid').focus();
+                return;
+            }
+
+            // Show custom toast response
+            const formData = new FormData(enquiryForm);
+            const enquiryType = formData.get("enquiryType");
+            const firstName = formData.get("firstName");
+
+            showCustomResponse(enquiryType, firstName);
+
+            enquiryForm.reset();
+            toggleSubmit();
+        });
+
+        function showCustomResponse(type, name) {
+            let message = "";
+            switch (type) {
+                case "service":
+                    message = `Hi ${name}, thank you for your interest! Our team will send you detailed info about our services shortly.`;
+                    break;
+                case "booking":
+                    message = `Hi ${name}, thank you for your booking request. We currently have availability this weekend and will confirm via email.`;
+                    break;
+                case "collab":
+                    message = `Hey ${name}, we love that you're interested in collaborating! We'll reach out soon to explore the possibilities.`;
+                    break;
+                default:
+                    message = `Thanks ${name}, your enquiry has been received. We'll get back to you soon.`;
+            }
+
+            document.getElementById("toastText").textContent = message;
+            toastMsg.classList.add("show");
+            setTimeout(() => hideToast(), 8000); // auto-hide after 8s
+        }
+
+        function hideToast() {
+            toastMsg.classList.remove("show");
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Temptations Lounge - Food Gallery</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;300&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <style>
+        body {
+            font-family: 'Mulish', sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            background-color: #111;
+            color: #fff;
+        }
+
+        h1 {
+            text-align: center;
+            font-weight: 200;
+            font-size: 2.8rem;
+            color: #e94560;
+            margin-bottom: 2rem;
+        }
+
+        .controls {
+            text-align: center;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        input[type="search"],
+        select,
+        button {
+            padding: 10px 18px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #e94560;
+            color: #fff;
+            min-width: 180px;
+        }
+
+        input[type="search"] {
+            color: #000;
+            background: #fff;
+            cursor: text;
+        }
+
+        .gallery-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 28px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #1e1e1e;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            transition: transform 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 10px;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.04);
+            box-shadow: 0 10px 35px rgba(233, 69, 96, 0.7);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .caption-container {
+            text-align: center;
+            padding: 12px 16px 4px;
+        }
+
+        .caption {
+            font-weight: 300;
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+
+        .stars {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            color: #e94560;
+            font-size: 1.2rem;
+        }
+
+        .stars i.selected {
+            color: #ff5577;
+        }
+
+        .numeric-rating {
+            font-size: 0.85rem;
+            color: #ccc;
+        }
+
+        .rating-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e94560;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        .load-more-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+          /* --- FOOTER --- */
+          footer {
+            background: #000;
+            padding: 20px;
+            text-align: center;
+            color: #aaa;
+            font-size: 14px;
+            user-select: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Food Gallery</h1>
+
+    <div class="controls">
+        <input id="searchInput" type="search" placeholder="Search dishes..." aria-label="Search dishes" />
+        <select id="categoryFilter" aria-label="Filter by category">
+            <option value="all">All Categories</option>
+            <option value="starters">Starters</option>
+            <option value="mains">Mains</option>
+            <option value="desserts">Desserts</option>
+            <option value="drinks">Drinks</option>
+        </select>
+    </div>
+
+    <div class="gallery-container" id="gallery"></div>
+
+    <div class="load-more-container">
+        <button id="loadMore">Load More</button>
+    </div>
+
+    <script>
+        const dishes = [
+            {
+                id: "spring-rolls",
+                name: "Spring Rolls",
+                category: "starters",
+                image: "https://media.istockphoto.com/id/1070157508/photo/deep-fried-spring-rolls.webp?a=1&b=1&s=612x612&w=0&k=20&c=hlu4u0IbkD_z6N7QgxKxagLAfWPyksmEReqGuugUXdA="
+            },
+            {
+                id: "bruschetta",
+                name: "Bruschetta",
+                category: "starters",
+                image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: "chicken-strips",
+                name: "Chicken strips",
+                category: "starters",
+                image: "https://media.istockphoto.com/id/1350403843/photo/fried-chicken-strips-with-ketchup-on-white-wooden-board-fast-food.webp?a=1&b=1&s=612x612&w=0&k=20&c=thN2bNRIi8UNslVzUePvh_CJxXK8y25cZVp0Lv24qJM="
+            },
+            {
+                id: "Steak-&_Egg",
+                name: "Steak & Egg",
+                category: "mains",
+                image: "https://media.istockphoto.com/id/2210323657/photo/steak-and-eggs.webp?a=1&b=1&s=612x612&w=0&k=20&c=kqZQYVUvcjW_Jojk4cdOY4iOYkM_7EWlIKehSbzQLTw="
+            },
+            {
+                id: "Grilled-Steak",
+                name: "Grilled Steak",
+                category: "mains",
+                image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: "salmon",
+                name: "Grilled Salmon",
+                category: "mains",
+                image: "https://media.istockphoto.com/id/1214416414/photo/barbecued-salmon-fried-potatoes-and-vegetables-on-wooden-background.webp?a=1&b=1&s=612x612&w=0&k=20&c=AgidLz6RYOwAgDjKVOfDQhR6ePaRIRR6fcIM5Fp9P0A="
+            },
+            {
+                id: "Coffee",
+                name: "Coffee",
+                category: "drinks",
+                image: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: "cocktails",
+                name: "Cocktails",
+                category: "drinks",
+                image: "https://media.istockphoto.com/id/1303977626/photo/four-cocktails-in-drinking-glasses-on-marble-table.webp?a=1&b=1&s=612x612&w=0&k=20&c=-6d5-bsS9a-69OyIAlhfW79q-mfkbAOJxLOomBwlnow="
+            },
+            {
+                id: "smoothies", 
+                name: "Smoothies",
+                category: "drinks",
+                image: "https://media.istockphoto.com/id/172422431/photo/fruit-smoothies.webp?a=1&b=1&s=612x612&w=0&k=20&c=wAUZJnnHrANhQd5JwTkLh9FPEjVor_3yuWPMfunhZ6M="
+                 
+            },
+            {
+                id: "pudding",
+                name: "Pudding",
+                category: "desserts",
+                image: "https://media.istockphoto.com/id/939284330/photo/sticky-toffee-pudding.webp?a=1&b=1&s=612x612&w=0&k=20&c=xCxOuDpqJyyECrcOUatvG-MHiTLdgMk7lXvFOut9DL0="
+            },
+            {
+                id: "waffles",
+                name: "Waffles",
+                category: "desserts",
+                image: "https://media.istockphoto.com/id/186775013/photo/chocolate-and-banana-waffles.webp?a=1&b=1&s=612x612&w=0&k=20&c=eea1udC3vJInBMbC4MawxmDX4B1tiJ_0azmARpM6VFw="
+            },
+            {
+                id: "cheese-cake",
+                name: "Cheese cake",
+                category: "desserts",
+                image: "https://plus.unsplash.com/premium_photo-1678715022988-417bbb94e3df?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZGVzc2VydHN8ZW58MHx8MHx8fDA%3D"
+            },
+
+        ];
+
+        const gallery = document.getElementById("gallery");
+        const filter = document.getElementById("categoryFilter");
+        const loadMoreBtn = document.getElementById("loadMore");
+        const searchInput = document.getElementById("searchInput");
+
+        let visibleCount = 6;
+
+        function renderGallery() {
+            const selectedCategory = filter.value.toLowerCase();
+            const searchTerm = searchInput.value.trim().toLowerCase();
+
+            gallery.innerHTML = "";
+
+            const filtered = dishes.filter(dish => {
+                const categoryMatch = selectedCategory === "all" ? true : dish.category === selectedCategory;
+                const searchMatch = dish.name.toLowerCase().includes(searchTerm);
+                return categoryMatch && searchMatch;
+            });
+
+            filtered.slice(0, visibleCount).forEach(dish => {
+                const savedRating = localStorage.getItem(dish.id) || 0;
+
+                const item = document.createElement("div");
+                item.className = "gallery-item";
+                item.innerHTML = `
+          <div class="rating-badge">★ ${savedRating}</div>
+          <img src="${dish.image}" alt="${dish.name}">
+          <div class="caption-container">
+            <div class="caption">${dish.name}</div>
+            <div class="stars" data-id="${dish.id}">
+              ${[1, 2, 3, 4, 5].map(n => `
+                <i class="fa-regular fa-star ${n <= savedRating ? 'selected' : ''}" data-star="${n}"></i>
+              `).join("")}
+            </div>
+            <div class="numeric-rating">Rated: ${savedRating}</div>
+          </div>
+        `;
+                gallery.appendChild(item);
+            });
+
+            loadMoreBtn.style.display = filtered.length > visibleCount ? "inline-block" : "none";
+        }
+
+        // Handle star rating clicks
+        gallery.addEventListener("click", e => {
+            if (e.target.matches(".stars i")) {
+                const star = e.target;
+                const rating = parseInt(star.dataset.star);
+                const container = star.closest(".stars");
+                const dishId = container.dataset.id;
+
+                localStorage.setItem(dishId, rating);
+                renderGallery();
+            }
+        });
+
+        // Filter & Search event handlers
+        filter.addEventListener("change", () => {
+            visibleCount = 6;
+            renderGallery();
+        });
+
+        searchInput.addEventListener("input", () => {
+            visibleCount = 6;
+            renderGallery();
+        });
+
+        // Load more button
+        loadMoreBtn.addEventListener("click", () => {
+            visibleCount += 3;
+            renderGallery();
+        });
+
+        // Initial render
+        renderGallery();
+    </script>
+        <footer>
+            <p>&copy; 2025 The Temptations Lounge. Designed with love by Phumelele Rozana.</p>
+        </footer>
+    
+</body>
+
+</html>

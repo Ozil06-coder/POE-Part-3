@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Temptations Lounge - Upcoming Events</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@200&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --black: #111;
+            --burgundy: #800020;
+            --cream: #f5f0e1;
+            --white: #fff;
+            --charcoal: #2e2e2e;
+            --toast-bg: #800020cc;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Mulish', sans-serif;
+            font-weight: 200;
+            background-color: var(--black);
+            color: var(--cream);
+            padding: 40px 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-weight: 200;
+            font-size: 3rem;
+            color: var(--burgundy);
+            margin-bottom: 2rem;
+            letter-spacing: 1px;
+        }
+
+        .filters,
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .filters button {
+            background-color: var(--charcoal);
+            border: none;
+            color: var(--cream);
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 200;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .filters button.active,
+        .filters button:hover {
+            background-color: var(--burgundy);
+        }
+
+        .search-bar input {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            width: 300px;
+            max-width: 90vw;
+            font-family: 'Mulish', sans-serif;
+            font-weight: 200;
+            font-size: 1rem;
+        }
+
+        .events-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .event-card {
+            background: var(--charcoal);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            cursor: default;
+            transition: transform 0.3s ease;
+            position: relative;
+            font-weight: 200;
+        }
+
+        .event-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(128, 0, 32, 0.8);
+            z-index: 3;
+        }
+
+        .event-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            cursor: zoom-in;
+            user-select: none;
+        }
+
+        .event-content {
+            padding: 16px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .event-title {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: var(--burgundy);
+        }
+
+        .event-desc {
+            font-size: 0.95rem;
+            color: #ddd;
+            flex-grow: 1;
+            margin-bottom: 12px;
+        }
+
+        .event-category {
+            font-size: 0.8rem;
+            font-style: italic;
+            color: #aaa;
+            margin-bottom: 12px;
+            text-transform: capitalize;
+        }
+
+        .btn-rsvp {
+            align-self: flex-start;
+            background-color: var(--burgundy);
+            border: none;
+            color: var(--white);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 200;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-rsvp:hover {
+            background-color: #a32a3c;
+        }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            cursor: zoom-out;
+            padding: 20px;
+        }
+
+        .lightbox.active {
+            display: flex;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .lightbox img {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 16px;
+            box-shadow: 0 0 40px var(--burgundy);
+            user-select: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* RSVP Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 11000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .modal {
+            background: var(--charcoal);
+            padding: 24px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+            color: var(--cream);
+            font-weight: 200;
+            position: relative;
+        }
+
+        .modal h2 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--burgundy);
+            font-weight: 300;
+        }
+
+        .modal label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 200;
+        }
+
+        .modal input,
+        .modal select {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 16px;
+            border-radius: 8px;
+            border: none;
+            font-family: 'Mulish', sans-serif;
+            font-weight: 200;
+            font-size: 1rem;
+        }
+
+        .modal input:focus,
+        .modal select:focus {
+            outline: 2px solid var(--burgundy);
+        }
+
+        .modal .error {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            margin-top: -12px;
+            margin-bottom: 12px;
+            font-weight: 300;
+        }
+
+        .modal .btn-submit {
+            background-color: var(--burgundy);
+            border: none;
+            color: var(--white);
+            padding: 12px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 200;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+
+        .modal .btn-submit:hover {
+            background-color: #a32a3c;
+        }
+
+        .modal .btn-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: none;
+            border: none;
+            color: var(--burgundy);
+            font-size: 1.5rem;
+            cursor: pointer;
+            font-weight: 300;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--toast-bg);
+            color: var(--white);
+            padding: 14px 28px;
+            border-radius: 30px;
+            box-shadow: 0 4px 20px rgba(128, 0, 32, 0.7);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            font-weight: 200;
+            font-size: 1rem;
+            z-index: 12000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .event-card {
+                grid-column: span 1 !important;
+            }
+
+            .filters,
+            .search-bar {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .search-bar input {
+                width: 90vw;
+            }
+        }
+        /* --- FOOTER --- */
+        footer {
+            background: #000;
+            padding: 20px;
+            text-align: center;
+            color: #aaa;
+            font-size: 14px;
+            user-select: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Upcoming Events</h1>
+
+    <div class="filters" id="filterButtons" role="list">
+        <button data-category="all" class="active" role="listitem">All</button>
+        <button data-category="music" role="listitem">Music</button>
+        <button data-category="party" role="listitem">Party</button>
+    </div>
+
+    <div class="search-bar">
+        <input type="search" id="searchInput" placeholder="Search events..." aria-label="Search events" />
+    </div>
+
+    <div class="events-container" id="eventsContainer" role="list">
+        <!-- Event cards injected here -->
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" role="dialog" aria-modal="true" aria-label="Image Preview" tabindex="-1">
+        <img src="" alt="" />
+    </div>
+
+    <!-- RSVP Modal -->
+    <div class="modal-overlay" id="rsvpModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"
+        tabindex="-1">
+        <div class="modal">
+            <button class="btn-close" aria-label="Close RSVP form">&times;</button>
+            <h2 id="modalTitle">RSVP for Event</h2>
+            <form id="rsvpForm" novalidate>
+                <label for="name">Name *</label>
+                <input type="text" id="name" name="name" required aria-required="true" />
+                <div class="error" id="nameError"></div>
+
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" required aria-required="true" />
+                <div class="error" id="emailError"></div>
+
+                <label for="guests">Number of Guests *</label>
+                <select id="guests" name="guests" required aria-required="true">
+                    <option value="">Select guests</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4+</option>
+                </select>
+                <div class="error" id="guestsError"></div>
+
+                <button type="submit" class="btn-submit">Submit RSVP</button>
+            </form>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2025 The Temptations Lounge. Designed with love by Phumelele Rozana.</p>
+    </footer>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const events = [
+            {
+                id: 1,
+                title: "Soulful Sundays",
+                desc: "Experience the best live jazz & RnB with soulful artists and smooth vibes.",
+                img: "https://media.istockphoto.com/id/2164188076/photo/female-dj-showing-turntable-expertise.webp?a=1&b=1&s=612x612&w=0&k=20&c=Kn5R7SP2JBrYH7epW2QoLoh3cR5MuiPIZfhxPIDlLvA=",
+                category: "music"
+            },
+            {
+                id: 2,
+                title: "Sgija Fridays",
+                desc: "Experience a hyped ama piano vibe featuring various ama piano DJs",
+                img: "https://images.unsplash.com/photo-1696627958251-775068a8ddbc?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Y2hpbGxlZCUyMHBhcnR5fGVufDB8fDB8fHww",
+                category: "music"
+            },
+            {
+                id: 3,
+                title: "Summer Beach Party",
+                desc: "Join us for a wild summer party with DJs, cocktails, and beach games.",
+                img: "https://images.unsplash.com/photo-1581417478175-a9ef18f210c2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bmlnaHQlMjBwYXJ0eXxlbnwwfHwwfHx8MA%3D%3D",
+                category: "party"
+            },
+            {
+                id: 4,
+                title: "Amapiano Night Bash",
+                desc: "Dance all night to electrifying beats and neon lights.",
+                img: "https://media.istockphoto.com/id/471576230/photo/guy-wearing-bunny-head-with-friend-at-party-in-club.webp?a=1&b=1&s=612x612&w=0&k=20&c=VqaidRC_pCHtsAXRqsU4RkdWx6YX105InebIPz2cRkQ=",
+                category: "party"
+            },
+        ];
+
+        const eventsContainer = document.getElementById('eventsContainer');
+        const filterButtons = document.getElementById('filterButtons');
+        const searchInput = document.getElementById('searchInput');
+        const lightbox = document.querySelector('.lightbox');
+        const lightboxImg = lightbox.querySelector('img');
+        const rsvpModal = document.getElementById('rsvpModal');
+        const rsvpForm = document.getElementById('rsvpForm');
+        const toast = document.getElementById('toast');
+        let currentFilter = 'all';
+        let filteredEvents = [...events];
+        let rsvpEventId = null;
+
+        // Render events with fade-in
+        function renderEvents(list) {
+            eventsContainer.innerHTML = '';
+            list.forEach(event => {
+                const card = document.createElement('div');
+                card.classList.add('event-card');
+                card.setAttribute('role', 'listitem');
+                card.setAttribute('tabindex', '0');
+                card.setAttribute('aria-label', `${event.title} event`);
+                card.style.opacity = 0;
+                card.style.transition = 'opacity 0.5s ease';
+                card.innerHTML = `
+        <img src="${event.img}" alt="${event.title}" class="event-image" tabindex="0" />
+        <div class="event-content">
+          <div class="event-title">${event.title}</div>
+          <div class="event-desc">${event.desc}</div>
+          <div class="event-category">${event.category}</div>
+          <button class="btn-rsvp" aria-label="RSVP for ${event.title}" data-id="${event.id}">RSVP</button>
+        </div>
+      `;
+                eventsContainer.appendChild(card);
+                // fade in
+                setTimeout(() => card.style.opacity = 1, 100);
+            });
+            attachEventListeners();
+        }
+
+        // Attach event listeners for images and RSVP buttons
+        function attachEventListeners() {
+            document.querySelectorAll('.event-image').forEach(img => {
+                img.addEventListener('click', () => openLightbox(img.src, img.alt));
+                img.addEventListener('keydown', e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openLightbox(img.src, img.alt);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.btn-rsvp').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    rsvpEventId = btn.dataset.id;
+                    openRSVPModal();
+                });
+            });
+        }
+
+        // Lightbox functions
+        function openLightbox(src, alt) {
+            lightboxImg.src = src;
+            lightboxImg.alt = alt;
+            lightbox.classList.add('active');
+            lightbox.focus();
+        }
+        lightbox.addEventListener('click', () => {
+            lightbox.classList.remove('active');
+            lightboxImg.src = '';
+            lightboxImg.alt = '';
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                lightbox.classList.remove('active');
+                lightboxImg.src = '';
+                lightboxImg.alt = '';
+            }
+        });
+
+        // Filter events by category
+        filterButtons.addEventListener('click', e => {
+            if (e.target.tagName !== 'BUTTON') return;
+            currentFilter = e.target.dataset.category;
+            filterButtons.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            filterAndRender();
+        });
+
+        // Search input handler
+        searchInput.addEventListener('input', () => {
+            filterAndRender();
+        });
+
+        // Filter & render events based on category and search
+        function filterAndRender() {
+            const searchTerm = searchInput.value.toLowerCase();
+            filteredEvents = events.filter(event => {
+                const matchesCategory = currentFilter === 'all' || event.category === currentFilter;
+                const matchesSearch = event.title.toLowerCase().includes(searchTerm) || event.desc.toLowerCase().includes(searchTerm);
+                return matchesCategory && matchesSearch;
+            });
+            renderEvents(filteredEvents);
+        }
+
+        // RSVP Modal functions
+        const modalCloseBtn = rsvpModal.querySelector('.btn-close');
+        modalCloseBtn.addEventListener('click', closeRSVPModal);
+
+        rsvpModal.addEventListener('click', e => {
+            if (e.target === rsvpModal) closeRSVPModal();
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && rsvpModal.classList.contains('active')) {
+                closeRSVPModal();
+            }
+        });
+
+        function openRSVPModal() {
+            rsvpForm.reset();
+            clearErrors();
+            rsvpModal.classList.add('active');
+            rsvpModal.focus();
+        }
+        function closeRSVPModal() {
+            rsvpModal.classList.remove('active');
+        }
+
+        // Form validation helpers
+        function showError(inputId, message) {
+            document.getElementById(inputId + 'Error').textContent = message;
+        }
+        function clearErrors() {
+            ['name', 'email', 'guests'].forEach(id => showError(id, ''));
+        }
+        function validateForm() {
+            let valid = true;
+            clearErrors();
+
+            const name = rsvpForm.name.value.trim();
+            if (name.length < 2) {
+                showError('name', 'Please enter your name (at least 2 characters)');
+                valid = false;
+            }
+
+            const email = rsvpForm.email.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('email', 'Please enter a valid email address');
+                valid = false;
+            }
+
+            const guests = rsvpForm.guests.value;
+            if (!guests) {
+                showError('guests', 'Please select number of guests');
+                valid = false;
+            }
+
+            return valid;
+        }
+
+        // Toast functions
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Form submit handler
+        rsvpForm.addEventListener('submit', e => {
+            e.preventDefault();
+            if (!validateForm()) return;
+
+            // Fake "submission"
+            closeRSVPModal();
+
+            // Could add API call here for real backend...
+
+            showToast(`Thanks for RSVPing! See you at "${events.find(ev => ev.id == rsvpEventId).title}"!`);
+        });
+
+        // Initial render
+        renderEvents(events);
+    </script>
+
+</body>
+
+</html>

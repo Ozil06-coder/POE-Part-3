@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Temptations Lounge - Menu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #111;
+            --burgundy: #800020;
+            --cream: #f5f0e1;
+            --white: #fff;
+            --charcoal: #2e2e2e;
+            --tag-color: #e94560;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Mulish', sans-serif;
+            font-weight: 200;
+            background-color: var(--black);
+            color: var(--cream);
+            padding: 40px 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-weight: 200;
+            font-size: 3rem;
+            color: var(--burgundy);
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .top-bar a {
+            padding: 12px 24px;
+            background-color: var(--burgundy);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 300;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .top-bar a:hover {
+            background-color: #a32a3c;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .filters button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: var(--charcoal);
+            color: var(--white);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-weight: 300;
+        }
+
+        .filters button.active,
+        .filters button:hover {
+            background-color: var(--burgundy);
+        }
+
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .search-bar input {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            width: 80%;
+            max-width: 500px;
+            font-size: 1rem;
+            font-family: 'Mulish', sans-serif;
+        }
+
+        .menu-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .menu-item {
+            background-color: var(--charcoal);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-6px) scale(1.02);
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .item-name {
+            font-size: 1.2rem;
+            font-weight: 300;
+            color: var(--white);
+            margin-bottom: 6px;
+        }
+
+        .item-desc {
+            font-size: 0.95rem;
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+
+        .item-price {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--cream);
+        }
+
+        .tags {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .tag {
+            background-color: var(--tag-color);
+            color: var(--white);
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 300;
+        }
+
+        @media (max-width: 600px) {
+            .filters {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Our Menu</h1>
+
+    <div class="top-bar">
+        <a href="menu.pdf" download>📄 Download Full Menu (PDF)</a>
+    </div>
+
+    <div class="filters" id="categoryButtons">
+        <button data-category="all" class="active">All</button>
+        <button data-category="starters">Starters</button>
+        <button data-category="main">Main Dishes</button>
+        <button data-category="dessert">Dessert</button>
+        <button data-category="drinks">Drinks</button>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search for a dish...">
+    </div>
+
+    <div class="menu-container" id="menuContainer">
+        <!-- Items will be injected here -->
+    </div>
+
+    <script>
+        const menuItems = [
+            {
+                name: "Classic Starters",
+                desc: "Spring Rolls, Bruschetta, Chicken Strips",
+                price: "From R85-105",
+                category: "starters",
+                tags: []
+            },
+            {
+                name: "Pizza",
+                desc: "Focacia Pizza, mexican Chilli, Hawaiian Pizza, Roman Pizza",
+                price: "From R70-R150",
+                category: "main",
+                tags: []
+            },
+            {
+                name: "Steaks",
+                desc: "T-Bone Steak, Steak & Egg, Steak & Cheese",
+                price: "From R165-R210",
+                category: "main",
+                tags: []
+            },
+            {
+                name: "Salmon/Fish",
+                desc: "Grilled Salmon, Fried Salmon, Fish & Chips",
+                price: "R95-R150",
+                category: "main",
+                tags: []
+            },
+            {
+                name: "Desserts",
+                desc: "Cheescake, Puding, Waffles",
+                price: "From R70-R112",
+                category: "dessert",
+                tags: []
+            },
+            {
+                name: "Cocktails",
+                desc: "Mojito, Pina Colada, Long Island, Mango Daquiry, etc...",
+                price: " From R45-R180",
+                category: "drinks",
+                tags: []
+            },
+            {
+                name: "Coffee",
+                desc: "Cappuccino, Latte, Black, Flat White",
+                price: "From R35-R120",
+                category: "drinks",
+                tags: []
+            }
+        ];
+
+        const container = document.getElementById("menuContainer");
+        const categoryButtons = document.querySelectorAll("#categoryButtons button");
+        const searchInput = document.getElementById("searchInput");
+
+        function renderMenu(category = "all", searchTerm = "") {
+            container.innerHTML = "";
+
+            const filtered = menuItems.filter(item => {
+                const matchesCategory = category === "all" || item.category === category;
+                const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+
+            filtered.forEach((item, index) => {
+                const div = document.createElement("div");
+                div.className = "menu-item";
+                div.style.animationDelay = `${index * 0.07}s`;
+
+                const tagsHTML = item.tags.map(tag => `<span class="tag">${tag}</span>`).join("");
+
+                div.innerHTML = `
+          <div class="item-name">${item.name}</div>
+          <div class="item-desc">${item.desc}</div>
+          <div class="item-price">${item.price}</div>
+          <div class="tags">${tagsHTML}</div>
+        `;
+
+                container.appendChild(div);
+            });
+        }
+
+        categoryButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                categoryButtons.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                const category = btn.getAttribute("data-category");
+                renderMenu(category, searchInput.value);
+            });
+        });
+
+        searchInput.addEventListener("input", () => {
+            const activeCategory = document.querySelector(".filters button.active").getAttribute("data-category");
+            renderMenu(activeCategory, searchInput.value);
+        });
+
+        renderMenu(); // initial load
+    </script>
+</body>
+
+</html>

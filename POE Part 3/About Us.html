@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Us - The Temptations Lounge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;400&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Mulish', sans-serif;
+            background: #111;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .about-container {
+            padding: 80px 20px;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .about-heading {
+            font-size: 36px;
+            text-align: center;
+            font-weight: 200;
+            margin-bottom: 60px;
+        }
+
+        .about-highlight {
+            color: #8B0000;
+            font-weight: 400;
+        }
+
+        .about-section {
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+        }
+
+        .about-block {
+            text-align: center;
+            font-weight: 200;
+        }
+
+        .about-block h3 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  font-weight: 200;
+  position: relative;
+  display: inline-block;
+  cursor: default;
+  padding-bottom: 4px;
+}
+
+.about-block h3:hover {
+  color: #8B0000;
+  border-bottom: 1px solid #8B0000;
+  transition: color 0.3s ease, border-bottom-width 0.3s ease;
+}
+
+
+.about-block h3::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  background-color: #8B0000;
+  transition: width 0.3s ease;
+}
+
+.about-block h3:hover::after {
+  width: 100%;
+}
+
+        .about-block p {
+            font-size: 16px;
+            max-width: 700px;
+            margin: auto;
+            line-height: 1.6;
+            color: #ddd;
+        }
+
+        /* Timeline */
+        .timeline {
+            margin: 80px auto 100px;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 20px 0;
+        }
+
+        .timeline::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .timeline::-webkit-scrollbar-thumb {
+            background: #8B0000;
+            border-radius: 6px;
+        }
+
+        .timeline-event {
+            display: inline-block;
+            width: 200px;
+            text-align: center;
+            margin: 0 30px;
+            position: relative;
+            color: #bbb;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-event:hover {
+            color: #fff;
+        }
+
+        .timeline-event span {
+            display: block;
+            font-size: 32px;
+            font-weight: 200;
+        }
+
+        .timeline-description {
+            margin-top: 10px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .timeline-event:hover .timeline-description {
+            opacity: 1;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #000;
+            color: #ccc;
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            
+        }
+
+        /* ScrollReveal Placeholder */
+        [data-sr] {
+            visibility: hidden;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="about-container">
+        <h1 class="about-heading">Welcome to <span class="about-highlight">The Temptations Lounge</span></h1>
+
+        <div class="about-section">
+            <div class="about-block" data-sr>
+                <h3>Our Story</h3>
+                <p>
+                    The Temptations Lounge was born from a passion for luxury, great music, unforgettable nights, and
+                    authentic connections.
+                    Nestled in the heart of the city, we’ve become the go-to space where elegance meets entertainment.
+                </p>
+            </div>
+
+            <div class="about-block" data-sr>
+                <h3>What We Offer</h3>
+                <p>
+                    From live jazz nights and Afrobeat Fridays to gourmet meals and signature cocktails,
+                    we craft experiences that indulge every sense. Every night at Temptations is a moment worth
+                    remembering.
+                </p>
+            </div>
+
+            <div class="about-block" data-sr>
+                <h3>Our Vibe</h3>
+                <p>
+                    Think velvet seats, moody lights, ambient sounds and the rich aroma of luxury.
+                    We cater to lovers of fine dining, music, and unmatched energy — all under one exquisite roof.
+                </p>
+            </div>
+
+            <div class="about-block" data-sr>
+                <h3>Join the Movement</h3>
+                <p>
+                    Whether you're booking a private booth, planning a celebration, or looking to collaborate —
+                    our doors are open. We are more than a lounge. We are an experience.
+                </p>
+            </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline">
+            <div class="timeline-event" data-sr>
+                <span>2023</span>
+                <div class="timeline-description">Soft launch. The dream begins.</div>
+            </div>
+            <div class="timeline-event" data-sr>
+                <span>2024</span>
+                <div class="timeline-description">Major rebrand. We become a movement.</div>
+            </div>
+            <div class="timeline-event" data-sr>
+                <span>2025</span>
+                <div class="timeline-description">Vision: Luxury lounge franchising begins.</div>
+            </div>
+            <div class="timeline-event" data-sr>
+                <span>2026</span>
+                <div class="timeline-description">Expansion into Africa. New sounds, same soul.</div>
+            </div>
+        </div>
+    </div>
+
+    <footer>&copy; 2025 The Temptations Lounge • Designed with love by Karabo & Lumi 🥂</footer>
+
+    <!-- ScrollReveal -->
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <script>
+        ScrollReveal().reveal('[data-sr]', {
+            duration: 1000,
+            origin: 'top',
+            distance: '40px',
+            easing: 'ease-in-out',
+            reset: false,
+            interval: 100
+        });
+    </script>
+
+</body>
+
+</html>

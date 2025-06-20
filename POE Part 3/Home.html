@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The Temptations Lounge | Luxury Lounge in Germiston</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Temptations Lounge in Germiston is the ultimate destination for nightlife, live music, gourmet cuisine, and exclusive events. Book your table today.">
+    <meta name="keywords"
+        content="Temptations Lounge, Germiston nightlife, lounges in South Africa, live music bar, luxury lounge, Zamba wings, private bookings">
+    <meta name="author" content="Phumelele Rozana">
+
+    <!-- Open Graph for Social Media Sharing -->
+    <meta property="og:title" content="The Temptations Lounge | Experience Elite Vibes" />
+    <meta property="og:description"
+        content="Luxury, music, and unforgettable nights await at Temptations Lounge in Germiston. Explore our events and menu." />
+    <meta property="og:image" content="https://yourdomain.com/images/og-image.jpg" />
+    <meta property="og:url" content="https://yourdomain.com" />
+    <meta property="og:type" content="website" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.png" type="image/png" />
+
+    <!-- Fonts & styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;400;600&family=Open+Sans:wght@300;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" />
+
+    <!-- CSS -->
+    <style>
+        /* --- BASE --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    
+        html,
+        body {
+            width: 100%;
+            font-family: "Open Sans", sans-serif;
+            color: #f5f5f5;
+            background: #111;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+    
+        a {
+            color: inherit;
+            text-decoration: none;
+            position: relative;
+        }
+    
+        a:hover::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -3px;
+            width: 100%;
+            height: 2px;
+            background-color: #800020;
+            transition: all 0.3s ease-in-out;
+        }
+    
+        /* remove underline on buttons */
+        .btn::after {
+            content: none !important;
+        }
+    
+        /* --- NAVBAR --- */
+        .navbar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px 0 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 10;
+            font-weight: 300;
+            transition: background-color 0.4s ease;
+        }
+    
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+        }
+    
+        .logo {
+            flex-shrink: 0;
+            width: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding-left: 10px;
+        }
+    
+        .logo img {
+            height: 100px;
+            width: auto;
+            max-width: 100%;
+            display: block;
+            margin-top: -20px;
+            user-select: none;
+        }
+    
+        .nav-links {
+            display: flex;
+            gap: 48px;
+            /* This adds more space between nav items */
+            align-items: center;
+        }
+    
+        .nav-links a {
+            font-weight: 300;
+            font-size: 16px;
+            transition: color 0.5s ease-in-out;
+            padding: 8px 4px;
+            /* Add some vertical and horizontal breathing room */
+        }
+    
+        .nav-links a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -3px;
+            width: 0;
+            height: 2px;
+            background-color: #800020;
+            transition: width 0.4s ease-in-out;
+        }
+    
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+    
+        .nav-links a:hover {
+            color: #b22222;
+        }
+    
+    
+        /* --- BUTTONS --- */
+        .btn {
+            padding: 12px 26px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: background 0.3s, transform 0.3s;
+            display: inline-block;
+            font-size: 14px;
+            user-select: none;
+        }
+    
+        .btn-primary {
+            background: #800020;
+            color: #fff;
+    
+        }
+    
+        .btn-primary:hover {
+            background: #b22222;
+            transform: translateY(-2px);
+        }
+    
+        .btn-outline {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+    
+        .btn-outline:hover {
+            background: white;
+            color: #111;
+            transform: translateY(-2px);
+        }
+    
+        /* --- HERO --- */
+        .hero {
+            position: relative;
+            height: 100vh;
+            background: url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1950&q=80") center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 20px;
+            margin: 0;
+            color: #f5f5f5;
+        }
+    
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1;
+        }
+    
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 700px;
+        }
+    
+        .hero-content .subtitle {
+            font-size: 22px;
+            font-weight: 200;
+            letter-spacing: 2px;
+            color: #ffffff;
+        }
+    
+        .hero-content h1 {
+            font-size: 52px;
+            font-weight: 600;
+            margin: 20px 0;
+            line-height: 1.1;
+        }
+    
+        .hero-content .description {
+            font-size: 18px;
+            color: #ddd;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+    
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            z-index: 2;
+        }
+    
+        .about-container {
+            padding: 100px 20px;
+            background-color: #111;
+            text-align: center;
+            color: #f5f5f5;
+        }
+    
+        .about-heading {
+            font-size: 36px;
+            font-weight: 300;
+            margin-bottom: 60px;
+            color: #fff;
+        }
+    
+        .about-highlight {
+            color: #8B0000;
+            font-weight: 600;
+        }
+    
+        .about-content {
+            max-width: 900px;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+    
+        .about-block h3 {
+            font-size: 22px;
+            font-weight: 300;
+            margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
+        }
+    
+        .about-block h3::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: #8B0000;
+            transition: width 0.4s ease-in-out;
+            margin-top: 5px;
+        }
+    
+        .about-block:hover h3::after {
+            width: 100%;
+        }
+    
+        .about-block p {
+            font-size: 16px;
+            line-height: 1.6;
+            font-weight: 200;
+            color: #ddd;
+        }
+    
+        .vision-2025 h3 {
+            color: #8B0000;
+            font-weight: 400;
+        }
+    
+        .vision-title {
+            cursor: pointer;
+            text-align: center;
+            font-weight: 400;
+            color: #fff;
+            transition: text-shadow 0.3s ease;
+        }
+    
+        .vision-title:hover {
+            text-shadow: 0 0 8px #8B0000, 0 0 12px #8B0000;
+            color: #fce8e8;
+        }
+    
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(3px);
+        }
+    
+        .modal-content {
+            background-color: #111;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 600px;
+            color: #f5f5f5;
+            font-weight: 300;
+            box-shadow: 0 0 40px rgba(139, 0, 0, 0.4);
+            animation: fadeIn 0.8s ease-out;
+        }
+    
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+    
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    
+    
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #8B0000;
+            font-weight: 400;
+        }
+    
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: 300;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+    
+        .close:hover {
+            color: #fff;
+        }
+    
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+    
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    
+    
+        /* --- LOCATION --- */
+        .location-section {
+            padding: 80px 20px;
+            text-align: center;
+            background: #111;
+        }
+    
+        #map {
+            width: 100%;
+            height: 320px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 0 15px rgba(178, 34, 34, 0.5);
+        }
+    
+        /* --- FOOTER --- */
+        footer {
+            background: #000;
+            padding: 20px;
+            text-align: center;
+            color: #aaa;
+            font-size: 14px;
+            user-select: none;
+        }
+    
+        /* --- RESPONSIVE --- */
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+    
+            .logo {
+                width: 120px;
+            }
+    
+            nav.nav-links {
+                gap: 20px;
+                font-size: 14px;
+            }
+    
+            .hero-content h1 {
+                font-size: 36px;
+            }
+        }
+    </style>
+        
+</head>
+
+<body>
+    <section class="hero" id="about">
+        <header class="navbar">
+            <div class="logo">
+                <img src="Logo.png" alt="Temptations Lounge Logo in Germiston, South Africa" loading="lazy" />
+            </div>
+            <nav class="nav-links">
+                <a href="#">Home</a>
+                <a href="#about-section">About Us</a>
+                <a href="gallary.html">Gallery</a>
+                <a href="#location">Find Us</a>
+                <a href="contact.html">Contact Us</a>
+            </nav>
+            <div class="nav-right">
+                <a href="enquiry.html" class="btn btn-primary">Enquiry</a>
+            </div>
+        </header>
+
+        <div class="hero-content">
+            <p class="subtitle">Welcome to The Temptations Lounge</p>
+            <h1>A Lounge of Luxury, A Taste of Desire</h1>
+            <p class="description">
+                Temptations Lounge is a versatile establishment offering South African traditional and European cuisine.
+                Perfect for
+                chill vibes, parties, and business bookings. <a href="menu.html">View our menu</a> or <a
+                    href="upcoming-events.html">see what's happening this weekend</a>.
+            </p>
+            <div class="hero-buttons">
+                <a href="menu.html" class="btn btn-primary">Explore Menu</a>
+                <a href="upcoming-events.html" class="btn btn-outline">Upcoming Events</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about-section" class="about-container">
+        <h2 class="about-heading">Welcome to <span class="about-highlight">The Temptations Lounge</span></h2>
+        <div class="about-content">
+            <div class="about-block sr">
+                <h3>Our Story</h3>
+                <p>Temptations Lounge was born from a passion for luxury, music, and unforgettable nights. We've become
+                    the place where elegance meets entertainment in the heart of Germiston.</p>
+            </div>
+            <div class="about-block sr">
+                <h3>What We Offer</h3>
+                <p>Live jazz nights. Afrobeat Fridays. Gourmet meals. Signature cocktails. Every night is a sensory
+                    escape.</p>
+            </div>
+            <div class="about-block sr">
+                <h3>Our Vibe</h3>
+                <p>Velvet seating. Dim lights. Ambient sounds. We attract lovers of class, rhythm, and good taste.</p>
+            </div>
+            <div class="about-block sr">
+                <h3>Join the Movement</h3>
+                <p>From booth bookings to brand collabs — our doors are open. Temptations is more than a lounge; it's an
+                    experience.</p>
+            </div>
+            <div class="about-block vision-2025 sr">
+                <h3 class="vision-title" id="openModal">Where We're Going — <span class="about-highlight">Vision
+                        2025</span></h3>
+                <p>Tap to see our bold plans for the year ahead.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="location" class="location-section">
+        <h2>Find Us</h2>
+        <p>📍 123 Kingfisher Ave, Elspark, Germiston, 1428, South Africa</p>
+        <div id="map"></div>
+    </section>
+
+    <!-- Modal -->
+    <div id="visionModal" class="modal">
+        <div class="modal-content sr">
+            <span class="close">&times;</span>
+            <h2>Vision 2025</h2>
+            <p>Temptations Lounge is evolving beyond nightlife. We're launching exclusive merch, pop-up lounges across
+                SA, an elite mobile app, and a traveling food + music experience.</p>
+            <p>This isn’t just a lounge — it’s a luxury legacy in motion.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 The Temptations Lounge. Designed with love by Phumelele Rozana.</p>
+    </footer>
+
+    <!-- JS Libraries -->
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- Scripts -->
+    <script>
+        window.addEventListener("scroll", () => {
+            const navbar = document.querySelector(".navbar");
+            if (window.scrollY > window.innerHeight - 80) {
+                navbar.classList.add("scrolled");
+            } else {
+                navbar.classList.remove("scrolled");
+            }
+        });
+
+        ScrollReveal().reveal('.sr', {
+            distance: '40px',
+            origin: 'top',
+            duration: 1000,
+            delay: 100,
+            easing: 'ease-out',
+            interval: 150
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const map = L.map("map").setView([-26.2041, 28.0473], 13);
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+            }).addTo(map);
+            L.marker([-26.2041, 28.0473])
+                .addTo(map)
+                .bindPopup("Temptations Lounge")
+                .openPopup();
+        });
+
+        const modal = document.getElementById("visionModal");
+        const openBtn = document.getElementById("openModal");
+        const closeBtn = document.querySelector(".close");
+
+        openBtn.onclick = () => {
+            modal.style.display = "block";
+        };
+
+        closeBtn.onclick = () => {
+            modal.style.display = "none";
+        };
+
+        window.onclick = (e) => {
+            if (e.target == modal) {
+                modal.style.display = "none";
+            }
+        };
+    </script>
+</body>
+
+</html>
